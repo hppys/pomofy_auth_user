@@ -1,0 +1,128 @@
+/*
+|--------------------------------------------------------------------------
+| auth.css
+|--------------------------------------------------------------------------
+|
+| File ini berisi semua styling khusus untuk halaman Login dan Register.
+| Ini tidak akan dimuat di halaman landing page atau dashboard.
+|
+*/
+
+/* 1. Impor Font Kustom ('Press Start 2P') */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* 2. Styling Dasar untuk Body Halaman Auth */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    /* Background gradien ungu agar konsisten dengan tema utama */
+    background-image: linear-gradient(0deg, #4D316F, #754BA8);
+    font-family: 'Press Start 2P', cursive; /* Terapkan font pixelated secara global */
+}
+
+/* 3. Kontainer Utama Form */
+.auth-container {
+    background-color: #f8c5ba; /* Warna latar orange/pinkish dari desain lama */ 
+    padding: 2rem 2.5rem;
+    padding-top: 4rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 420px;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* 4. Ikon Header (Logo Profil) */
+.auth-header-icon {
+    font-size: 40px;
+    color: #fff;
+    background-color: #d48072; /* Warna lingkaran lebih gelap */ 
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Trik untuk memposisikan ikon di atas kontainer */
+    margin: -90px auto 20px auto; 
+    border: 5px solid #f8c5ba; 
+}
+
+/* 5. Judul Form (Login/Register) */
+.auth-title {
+    margin-bottom: 1.5rem;
+    color: #5c3e38;
+    font-size: 1.5rem;
+}
+
+/* 6. Tombol Kembali (di halaman Register) */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: #fff;
+    background-color: #d48072;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+    line-height: 1;
+}
+
+/* 7. Input Fields */
+.auth-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid #d48072; 
+    border-radius: 5px;
+    background-color: #efac9a;
+    color: #5c3e38;
+    font-family: 'Press Start 2P', cursive; /* Pastikan font diterapkan */
+    font-size: 0.8rem;
+    box-sizing: border-box;
+}
+
+.auth-input::placeholder {
+    color: #8c6b65; 
+}
+
+/* 8. Tombol Submit (Login/Register) */
+.auth-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #d48072; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: 'Press Start 2P', cursive;
+    transition: background-color 0.2s;
+}
+
+.auth-button:hover {
+    background-color: #c07060;
+}
+
+/* 9. Link Tambahan (Forgot Password / Already Registered) */
+.auth-links {
+    margin-top: 1.5rem;
+    font-size: 0.7rem;
+}
+
+.auth-links a {
+    color: #5c3e38;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}

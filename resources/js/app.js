@@ -1,118 +1,150 @@
+// Mengimpor file bootstrap dan inisialisasi Alpine.js
 import "./bootstrap";
-
 import Alpine from "alpinejs";
 
 window.Alpine = Alpine;
-
 Alpine.start();
 
-let pomodoro = document.getElementById("pomodoro-timer");
-let short = document.getElementById("short-timer");
-let long = document.getElementById("long-timer");
-let timers = document.querySelectorAll(".timer-display");
-let session = document.getElementById("pomodoro-session");
-let shortBreak = document.getElementById("short-break");
-let longBreak = document.getElementById("long-break");
-let startBtn = document.getElementById("start");
-let stopBtn = document.getElementById("stop");
-let timerMsg = document.getElementById("timer-message");
-let button = document.querySelector(".button");
+document.addEventListener('DOMContentLoaded', () => {
 
-let currentTimer = null;
-let myInterval = null;
+    // === 1. SELEKSI ELEMEN HTML ===
+    const appContainer = document.getElementById('app-container');
+    const runningTimerState = document.getElementById('running-timer-state');
+    const breakTimerState = document.getElementById('break-timer-state');
+    const timeDisplay = document.getElementById('time-display');
+    const breakTimeDisplay = document.getElementById('break-time-display');
+    const pauseButton = document.getElementById('pause-button');
+    const startBreakButton = document.getElementById('start-break-button');
+    const streakIcon = document.getElementById('streak-icon');
+    const streakModal = document.getElementById('streak-modal');
+    const closeStreakModalButton = document.getElementById('close-streak-modal');
 
-// show the default timer
-function showDefaultTimer() {
-    pomodoro.style.display = "block";
-    short.style.display = "none";
-    long.style.display = "none";
-}
+    // === 2. VARIABEL STATUS APLIKASI ===
+    let timerInterval = null;
+    let isPaused = false;
+    let breakTimerHasStarted = false; // Flag baru untuk melacak status timer istirahat
+    const workSessionDuration = 0.1 * 60;
+    const breakSessionDuration = 0.1 * 60;
 
-showDefaultTimer();
+    // === 3. FUNGSI-FUNGSI UTAMA ===
 
-function hideAll() {
-    timers.forEach((timer) => (timer.style.display = "none"));
-}
-
-session.addEventListener("click", () => {
-    hideAll();
-
-    pomodoro.style.display = "block";
-
-    session.classList.add("active");
-    shortBreak.classList.remove("active");
-    longBreak.classList.remove("active");
-
-    currentTimer = pomodoro;
-});
-
-shortBreak.addEventListener("click", () => {
-    hideAll();
-
-    short.style.display = "block";
-
-    session.classList.remove("active");
-    shortBreak.classList.add("active");
-    longBreak.classList.remove("active");
-
-    currentTimer = short;
-});
-
-longBreak.addEventListener("click", () => {
-    hideAll();
-
-    long.style.display = "block";
-
-    session.classList.remove("active");
-    shortBreak.classList.remove("active");
-    longBreak.classList.add("active");
-
-    currentTimer = long;
-});
-
-// Start the timer on click
-function startTimer(timerDisplay) {
-    if (myInterval) {
-        clearInterval(myInterval);
+    /**
+     * Mengontrol state mana yang terlihat di halaman dashboard.
+     */
+    function showDashboardState(stateToShow) {
+        [runningTimerState, breakTimerState].forEach(state => {
+            if (state) state.classList.add('hidden');
+        });
+        if (stateToShow) stateToShow.classList.remove('hidden');
     }
 
-    timerDuration = timerDisplay.getAttribute("data-duration").split(":")[0];
+    /**
+     * Fungsi inti yang menjalankan countdown.
+     */
+    function runTimer(durationInSeconds, displayElement, onComplete) {
+        if (timerInterval) clearInterval(timerInterval);
+        let totalSeconds = durationInSeconds;
 
-    let durationinmiliseconds = timerDuration * 60 * 1000;
-    let endTimestamp = Date.now() + durationinmiliseconds;
+        const updateDisplay = () => {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            displayElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        };
 
-    myInterval = setInterval(function () {
-        const timeRemaining = new Date(endTimestamp - Date.now());
+        updateDisplay(); // Tampilkan waktu awal
 
-        if (timeRemaining <= 0) {
-            clearInterval(myInterval);
-            timerDisplay.textContent = "00:00";
-            const alarm = new Audio(
-                "https://www.freespecialeffects.co.uk/soundfx/scifi/electronic.wav"
-            );
-            alarm.play();
+        timerInterval = setInterval(() => {
+            if (!isPaused) {
+                totalSeconds--;
+                updateDisplay();
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    const alarm = new Audio("https://www.freespecialeffects.co.uk/soundfx/scifi/electronic.wav");
+                    alarm.play();
+                    if (onComplete) onComplete();
+                }
+            }
+        }, 1000);
+    }
+
+    /**
+     * Memulai atau menjeda sesi kerja (25 menit).
+     */
+    function toggleWorkSession() {
+        isPaused = !isPaused;
+        pauseButton.textContent = isPaused ? "▶" : "❚❚";
+    }
+    
+    /**
+     * PERBAIKAN: Memulai atau menjeda sesi istirahat.
+     */
+    function toggleBreakSession() {
+        // Jika timer istirahat belum pernah dimulai, mulai sekarang.
+        if (!breakTimerHasStarted) {
+            isPaused = false;
+            startBreakButton.textContent = "❚❚";
+            runTimer(breakSessionDuration, breakTimeDisplay, () => {
+                // Saat selesai, kembali ke landing page
+                window.location.href = "/";
+            });
+            breakTimerHasStarted = true; // Tandai bahwa timer sudah berjalan
         } else {
-            const minutes = Math.floor(timeRemaining / 60000);
-            const seconds = ((timeRemaining % 60000) / 1000).toFixed(0);
-            const formattedTime = `${minutes}:${seconds
-                .toString()
-                .padStart(2, "0")}`;
-            timerDisplay.textContent = formattedTime;
+            // Jika sudah berjalan, cukup toggle status pause
+            isPaused = !isPaused;
+            startBreakButton.textContent = isPaused ? "▶" : "❚❚";
         }
-    }, 1000);
-}
-
-startBtn.addEventListener("click", () => {
-    if (currentTimer) {
-        startTimer(currentTimer);
-        timerMsg.style.display = "none";
-    } else {
-        timerMsg.style.display = "block";
     }
-});
 
-stopBtn.addEventListener("click", () => {
-    if (currentTimer) {
-        clearInterval(myInterval);
+    /**
+     * Menyiapkan transisi ke mode istirahat.
+     */
+    function transitionToBreak() {
+        if (appContainer) appContainer.classList.add('break-active');
+        showDashboardState(breakTimerState);
+        breakTimerHasStarted = false; // Reset flag saat transisi
+        
+        // Tampilkan waktu istirahat awal
+        const minutes = Math.floor(breakSessionDuration / 60);
+        const seconds = breakSessionDuration % 60;
+        if (breakTimeDisplay) {
+            breakTimeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        if (startBreakButton) startBreakButton.textContent = "▶"; // Tombol selalu mulai dengan ▶
+    }
+
+
+    // === 4. EVENT LISTENERS ===
+
+    // Hanya jalankan logika timer jika kita berada di halaman dashboard
+    if (runningTimerState) {
+        // Tambahkan listener ke tombol pause/resume sesi kerja
+        if (pauseButton) {
+            pauseButton.addEventListener('click', toggleWorkSession);
+        }
+
+        // PERBAIKAN: Tambahkan listener ke tombol start/pause sesi istirahat
+        if (startBreakButton) {
+            startBreakButton.addEventListener('click', toggleBreakSession);
+        }
+
+        // Langsung mulai sesi kerja saat halaman dashboard dimuat
+        isPaused = false;
+        if (appContainer) appContainer.classList.remove('break-active');
+        showDashboardState(runningTimerState);
+        runTimer(workSessionDuration, timeDisplay, () => {
+            transitionToBreak();
+        });
+    }
+
+    // Hanya jalankan logika modal jika kita berada di halaman landing
+    if (streakIcon && streakModal) {
+        streakIcon.addEventListener('click', () => streakModal.classList.remove('hidden'));
+        closeStreakModalButton.addEventListener('click', () => streakModal.classList.add('hidden'));
+        streakModal.addEventListener('click', (event) => {
+            if (event.target === streakModal) {
+                streakModal.classList.add('hidden');
+            }
+        });
     }
 });

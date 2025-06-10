@@ -1,157 +1,116 @@
+/* resources/css/app.css */
+
+/* 1. Impor Font dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* 2. Integrasi dengan Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+/* 3. Definisi Variabel Warna dan Font Kustom */
+@layer base {
+  :root {
+    --pomofy-purple-dark: #4D316F;
+    --pomofy-purple-light: #754BA8;
+    --pomofy-moon: rgba(131, 99, 185, 0.5);
+    --pomofy-text-start: #FFFFFF;
+  }
+  
+  /* Menerapkan font kustom secara global ke body dengan kelas spesifik */
+  body.font-press-start, .font-press-start {
+    font-family: 'Press Start 2P', cursive;
+  }
 }
 
-body {
-    background-color: #1e213f;
-    color: #d7e0ff;
-}
+/* 4. Implementasi Warna Kustom ke Kelas Utilitas Tailwind */
+.bg-pomofy-purple-dark { background-color: var(--pomofy-purple-dark); }
+.from-pomofy-purple-dark { --tw-gradient-from: var(--pomofy-purple-dark); --tw-gradient-to: rgba(77, 49, 111, 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.to-pomofy-purple-light { --tw-gradient-to: var(--pomofy-purple-light); }
+.bg-pomofy-moon { background-color: var(--pomofy-moon); }
+.text-pomofy-text-start { color: var(--pomofy-text-start); }
+.bg-pomofy-hill1 { background-color: var(--pomofy-hill1); }
+.bg-pomofy-hill2 { background-color: var(--pomofy-hill2); }
 
-.container {
-    text-align: center;
-    width: 100%;
-    padding: 10px 0;
-}
+/* 5. Aturan CSS Tambahan (jika ada yang tidak bisa dihandle Tailwind) */
 
-.timer {
-    display: inline-block;
-    padding: 10px;
-    width: 600px;
-    box-sizing: border-box;
-}
-
-main {
-    width: 25rem;
-    height: 25rem;
-    border-radius: 50%;
-    text-align: center;
-    margin: 0 auto;
-    margin-bottom: 2rem;
-}
-
-h1 {
-    font-size: 2rem;
-    margin: 20px auto;
-}
-
-.button-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.pomodoro {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    margin: 2.5rem 0;
-    text-align: center;
-    border-radius: 50%;
-    background: #151932;
-    box-shadow: 20px 20px 42px #0e1021, -20px -20px 42px #1c2244;
-}
-
-.pomodoro::before {
-    content: "";
-    position: absolute;
-    border: 10px solid royalblue;
-    border-radius: 50%;
-    width: 22rem;
-    height: 22rem;
-}
-
-.time {
-    font-size: 5rem !important;
-    margin: 20px auto;
-}
-
-.button-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.button {
-    background-color: #2e325a;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease-in;
-}
-
-.button.active,
-.button:hover {
-    background-color: #020323;
-}
-
+/* Kelas untuk menyembunyikan elemen secara total */
 .hidden {
-    display: block;
+    display: none !important;
 }
 
-.timer-display {
-    font-size: 5rem;
-    margin-top: 20px;
-    font-weight: bold;
+#app-container.break-active {
+    /* Menambahkan !important untuk menimpa kelas background dari Tailwind CSS */
+    background-image: linear-gradient(0deg, #C15B5B, #D88A8A) !important;
 }
 
-.buttons {
-    margin-top: 20px;
+.floating-modal {
+    position: fixed; /* Mengambang di atas segalanya */ 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Memusatkan modal */ 
+    width: 33%; 
+    background-image: linear-gradient(0deg, #2F1E43, #754BA8); /* Latar modal */ 
+    color: white; 
+    border-radius: 8px; 
+    padding: 20px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+    z-index: 100; /* Pastikan di atas semua elemen lain */ 
 }
 
-#start,
-#stop {
-    background-color: #2e325a;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease-in;
+/* Styling untuk Header Streak Modal */
+.streak-header {
+    display: flex; 
+    justify-content: space-around; /* Inisial hari tersebar merata */ 
+    margin-bottom: 15px; 
+    background-color: #e78e7c; /* Latar bar pinkish */ 
+    padding: 10px; 
+    border-radius: 5px; 
 }
 
-#stop:hover {
-    background-color: tomato;
+.streak-header .day-initial {
+    font-weight: bold; 
+    text-align: center; /* Agar lingkaran di bawahnya terpusat */ 
 }
 
-#start:hover {
-    background-color: #219a52;
+.streak-header .day-initial::after { /* Lingkaran di bawah setiap inisial hari */
+    content: ''; 
+    display: block; 
+    width: 20px; 
+    height: 20px; 
+    background-color: #e0e0e0; /* Warna lingkaran abu-abu */ 
+    border-radius: 50%; 
+    margin: 5px auto 0 auto; /* Posisi lingkaran di bawah dan tengah */ 
 }
 
-#timer-message {
-    color: white;
-    background-color: tomato;
-    display: none;
-    padding: 0.5rem;
-    font-size: 1rem;
-    text-align: center;
-    border-radius: 1rem;
+/* Styling untuk Riwayat Streak */
+.streak-history h3 {
+    text-align: left; 
+    margin-bottom: 10px; 
+    font-size: 18px; 
 }
 
-/* Responsiveness */
-
-@media screen and (min-width: 320px) and (max-width: 600px) {
-    .container {
-        transform: scale(0.9);
-    }
-
-    .timer {
-        width: 500px;
-    }
+.history-item {
+    display: flex; 
+    justify-content: space-between; /* Hari di kiri, waktu di kanan */ 
+    padding: 8px 0; 
+    font-size: 14px; 
+    border-bottom: 1px solid #8a7aa5; /* Garis pemisah antar item */ 
 }
+
+.history-item:last-child {
+    border-bottom: none; /* Item terakhir tidak ada garis bawah */
+}
+
+/* Tombol Tutup Modal Streak */
+#close-streak-modal {
+    display: block; /* Agar bisa menggunakan margin auto untuk memusatkan */ 
+    margin: 20px auto 0 auto; /* Atas 20px, kiri-kanan auto (tengah) */ 
+    padding: 8px 15px; 
+    background-color: #e78e7c; 
+    border: none; 
+    color: white; 
+    border-radius: 5px; 
+    cursor: pointer; 
+}
+
